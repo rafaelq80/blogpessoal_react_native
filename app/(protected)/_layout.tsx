@@ -1,7 +1,7 @@
 import { AntDesign } from '@expo/vector-icons'
 import { Tabs } from 'expo-router'
 import React from 'react'
-import NavBar from '../components/navbar'
+import NavBar from '../../components/navbar'
 
 export default function ProtectedLayout() {
 	return (

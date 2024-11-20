@@ -4,7 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function UsuarioLayoutStack() {
     return (
-        <SafeAreaProvider>
+        <SafeAreaProvider style={{ flex: 1 }}>
             <StatusBar />
             <Slot />
         </SafeAreaProvider>

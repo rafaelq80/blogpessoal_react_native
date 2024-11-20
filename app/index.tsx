@@ -100,6 +100,7 @@ export default function Login() {
 							text-xl text-black bg-white pr-12"
 						placeholder="Senha"
 						secureTextEntry={!showPassword}
+						autoCapitalize="none"  
 						value={usuarioLogin.senha}
 						onChange={(e) => atualizarEstado(e, 'senha')}
 					/>

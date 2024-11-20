@@ -16,14 +16,19 @@ import { createUsuarioFormData } from '../services/FormDataService'
 import ImageService from '../services/ImageService'
 import { cadastrarUsuario } from '../services/Service'
 import { ToastAlerta } from '../utils/ToastAlerta'
-import { UsuarioFormData, usuarioSchema } from '../validations/UsuarioSchema'
-import Navbar from './components/navbar'
+import {
+	isValidImageUrl,
+	UsuarioFormData,
+	usuarioSchema,
+} from '../validations/UsuarioSchema'
+import Navbar from '../components/navbar'
 
 export default function Cadastro() {
 	const router = useRouter()
 
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [photoUri, setPhotoUri] = useState<string>('')
+	const [fotoPreview, setFotoPreview] = useState<string>('')
 	const [file, setfile] = useState<any>(null) // Estado para armazenar o arquivo
 	const [showUrlInput, setShowUrlInput] = useState<boolean>(false) // Controle do input de URL
 
@@ -60,7 +65,18 @@ export default function Cadastro() {
 			senha: '',
 		})
 		setPhotoUri('')
+		setFotoPreview('')
 		setShowUrlInput(false)
+	}
+
+	const toggleUrlInput = () => {
+		if (showUrlInput || file) {
+			setPhotoUri('')
+			setFotoPreview('')
+		}
+
+		// Alterna o estado do input
+		setShowUrlInput((prev) => !prev)
 	}
 
 	async function pickImageFromGallery() {
@@ -69,6 +85,7 @@ export default function Cadastro() {
 		const result = await ImageService.pickImageFromGallery()
 		if (result) {
 			setPhotoUri(result.uri)
+			setFotoPreview(result.uri)
 			setfile(result.file)
 		}
 	}
@@ -79,16 +96,21 @@ export default function Cadastro() {
 		const result = await ImageService.takePhotoWithCamera()
 		if (result) {
 			setPhotoUri(result.uri)
+			setFotoPreview(result.uri)
 			setfile(result.file)
 		}
 	}
 
 	// Atualiza estado e input manualmente
 	const handleInputChange = (name: keyof UsuarioFormData, value: string) => {
+
 		setValue(name, value)
 
 		if (name === 'foto') {
-			setPhotoUri(value) // Atualiza a prévia com a URL digitada
+			setPhotoUri(value)
+
+			if (isValidImageUrl(value)) setFotoPreview(value)
+			else setFotoPreview('')
 		}
 	}
 
@@ -137,9 +159,9 @@ export default function Cadastro() {
 
 				<View className="flex flex-col items-center justify-center w-full gap-4">
 					<View className="flex flex-col items-center justify-center w-9/12 gap-4 my-6">
-						{photoUri ? (
+						{fotoPreview ? (
 							<Image
-								source={{ uri: photoUri }}
+								source={{ uri: fotoPreview }}
 								className="w-40 h-40 rounded-full"
 							/>
 						) : (
@@ -157,7 +179,7 @@ export default function Cadastro() {
 
 						<View className="flex flex-row items-center gap-3">
 							<Pressable
-								onPress={() => setShowUrlInput((prev) => !prev)}
+								onPress={toggleUrlInput}
 								className="w-1/4 py-2 bg-indigo-200 border-2 border-indigo-900 rounded-2xl items-center justify-center"
 							>
 								<Text className="text-white text-lg">

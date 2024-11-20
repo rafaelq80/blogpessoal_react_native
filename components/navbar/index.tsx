@@ -1,8 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import { Image, Pressable, Text, View } from 'react-native'
-import { useAuthStore } from '../../../stores/AuthStore'
-import { ToastAlerta } from '../../../utils/ToastAlerta'
+import { useAuthStore } from '../../stores/AuthStore'
+import { ToastAlerta } from '../../utils/ToastAlerta'
 
 export default function NavBar() {
 	const router = useRouter()

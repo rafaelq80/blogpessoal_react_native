@@ -117,6 +117,7 @@ export default function Cadastro() {
 			router.replace('/')
 		} catch (error) {
 			ToastAlerta('Erro ao cadastrar o usuário!', 'erro')
+			console.error(error)
 		} finally {
 			setIsLoading(false)
 		}

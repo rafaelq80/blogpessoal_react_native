@@ -1,28 +1,28 @@
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
-import Tema from '../../../models/Tema'
+import Postagem from '../../../models/Postagem'
 import { deletar, listar } from '../../../services/AxiosService'
 import { useAuthStore } from '../../../stores/AuthStore'
 import { ToastAlerta } from '../../../utils/ToastAlerta'
 
-export default function DeletarTema() {
+export default function DeletarPostagem() {
 	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
 	const { usuario, handleLogout } = useAuthStore()
 	const token = usuario.token
 	const { id } = useLocalSearchParams()
-	const [tema, setTema] = useState({} as Tema)
+	const [postagem, setPostagem] = useState({} as Postagem)
 
-	async function buscarTemaPorId(id: string) {
+	async function buscarPostagemPorId(id: string) {
 		try {
-			await listar(`/temas/${id}`, setTema, {
+			await listar(`/postagens/${id}`, setPostagem, {
 				headers: { Authorization: token },
 			})
 		} catch (error: any) {
 			error.toString().includes('401')
 				? handleLogout()
-				: ToastAlerta('Erro ao listar os temas!', 'erro')
+				: ToastAlerta('Erro ao listar as postagems!', 'erro')
 		}
 	}
 
@@ -35,22 +35,22 @@ export default function DeletarTema() {
 
 	useEffect(() => {
 		if (id) {
-			buscarTemaPorId(id.toString())
+			buscarPostagemPorId(id.toString())
 		}
 	}, [id])
 
-	const deletarTema = async () => {
+	const deletarPostagem = async () => {
 		setIsLoading(true)
 		try {
-			await deletar(`/temas/${id}`, {
+			await deletar(`/postagens/${id}`, {
 				headers: { Authorization: usuario.token },
 			})
-			ToastAlerta('Tema Excluído!', 'sucesso')
-			router.replace('/tema')
+			ToastAlerta('Postagem Excluída!', 'sucesso')
+			router.replace('/postagem')
 		} catch (error: any) {
 			error.toString().includes('401')
 				? handleLogout()
-				: ToastAlerta('Erro ao Excluir o Tema!', 'erro')
+				: ToastAlerta('Erro ao Excluir a Postagem!', 'erro')
 			console.error(error)
 		}
 		setIsLoading(false)
@@ -70,22 +70,25 @@ export default function DeletarTema() {
 	return (
 		<View className="w-full flex-1 flex-col">
 			<Text className="p-8 text-2xl font-bold text-black text-center">
-				Você deseja excluir o Tema?
+				Você deseja excluir o Postagem?
 			</Text>
-			<View className="flex flex-col items-center justify-center w-11/12 bg-white rounded-2xl self-center">
+			<View className="flex flex-col items-center justify-center w-11/12 bg-white rounded-2xl border-2 border-indigo-800 self-center">
 				<View className="flex flex-row items-center w-full bg-indigo-800 rounded-t-2xl">
 					<Text className="text-white font-bold text-xl p-3">
-						Tema
+						Postagem
 					</Text>
 				</View>
 				<View className="w-full flex flex-col justify-center items-center p-2 bg-white">
 					<Text className="p-4 text-2xl font-semibold text-black">
-						{tema.descricao}
+						{postagem.titulo}
+					</Text>
+					<Text className="p-4 text-xl font-semibold text-black">
+						{postagem.texto}
 					</Text>
 				</View>
 				<View className="w-8/12 flex flex-row gap-4 my-4">
 					<Pressable
-						onPress={deletarTema}
+						onPress={deletarPostagem}
 						disabled={isLoading}
 						className="w-1/2 px-4 py-2 rounded-2xl bg-indigo-900"
 					>
@@ -94,7 +97,7 @@ export default function DeletarTema() {
 						</Text>
 					</Pressable>
 					<Pressable
-						onPress={() => router.replace('/tema')}
+						onPress={() => router.replace('/postagem')}
 						className="w-1/2 px-4 py-2 rounded-2xl bg-red-500"
 					>
 						<Text className="text-white text-xl text-center font-bold">

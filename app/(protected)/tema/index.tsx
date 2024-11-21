@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
 import { useFocusEffect, useRouter } from 'expo-router'
 import React, { useCallback, useState } from 'react'
 import {
@@ -13,7 +13,6 @@ import Tema from '../../../models/Tema'
 import { listar } from '../../../services/AxiosService'
 import { useAuthStore } from '../../../stores/AuthStore'
 import { ToastAlerta } from '../../../utils/ToastAlerta'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function ListarTemas() {
 	const router = useRouter()
@@ -84,7 +83,7 @@ export default function ListarTemas() {
 					onPress={() => router.push('/tema/formtema' as any)}
 					className="bg-green-600 rounded-full p-4 shadow-lg flex items-center justify-center"
 				>
-					<Ionicons name="add" size={24} color={'#ffffff'} />
+					<AntDesign name="plus" size={24} color={'#ffffff'} />
 				</Pressable>
 			</View>
 		</View>

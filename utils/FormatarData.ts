@@ -7,10 +7,8 @@ export const formatarData = (data: string | undefined): string => {
   
   try {
 
-    // Converte a data ISO para objeto Date
     const dataIso = parseISO(data);
     
-    // Formata a data no padrão Português Brasil
     return format(dataIso, 'dd/MM/yyyy', { locale: ptBR });
 
   } catch {
@@ -24,14 +22,8 @@ export const formatarHora = (data: string | undefined): string => {
   
   try {
     
-    // Converte a data ISO para objeto Date
     const dataIso = parseISO(data);
-    
-    // Adiciona 3 horas para compensar o fuso horário (GMT-3)
-    // Usar esta linha apenas se o banco de dados gravar a data em GMT0
-    //const dataTZ = addHours(dataIso, 3);
 
-    // Formata a hora no padrão Português Brasil
     return format(dataIso, 'HH:mm', { locale: ptBR });
 
   } catch {
@@ -43,14 +35,9 @@ export const formatarDataCompleta = (data: string | undefined): string => {
   if (!data) return '';
   
   try {
-    // Converte a data ISO para objeto Date
-    const dataIso = parseISO(data);
-    
-    // Adiciona 3 horas para compensar o fuso horário (GMT-3)
-    // Usar esta linha apenas se o banco de dados gravar a data em GMT0
-    //const dataTZ = addHours(dataIso, 3);
 
-    // Formata a data com a hora no padrão Português Brasil
+    const dataIso = parseISO(data);
+
     return format(dataIso, 'dd/MM/yyyy HH:mm', { locale: ptBR });
   } catch (error) {
     console.error('Erro ao formatar data:', error);

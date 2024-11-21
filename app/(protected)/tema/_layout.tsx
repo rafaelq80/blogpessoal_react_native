@@ -13,7 +13,7 @@ export default function TemaLayoutStack() {
 				}}
 			>
 				<Stack.Screen name="index" options={{ title: 'Listar Temas' }} />
-				<Stack.Screen name="formtema" options={{ title: 'Cadastrar Tema' }} />
+				<Stack.Screen name="formtema" options={{ title: 'Formulário - Tema' }} />
 				<Stack.Screen name="deletartema" options={{ title: 'Deletar Tema' }} />
 			</Stack>
 		</SafeAreaView>

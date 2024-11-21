@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
 import { useFocusEffect, useRouter } from 'expo-router'
 import React, { useCallback, useState } from 'react'
 import {
@@ -71,7 +71,7 @@ export default function ListarPostagens() {
 				<ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
 					<View className="flex justify-center items-center">
 						{postagens
-							.sort((a, b) => a.id - b.id)
+							.sort((a, b) => b.id - a.id)
 							.map((postagem) => (
 								<CardPostagens
 									key={postagem.id}
@@ -83,10 +83,10 @@ export default function ListarPostagens() {
 			)}
 			<View className="absolute bottom-24 right-8">
 				<Pressable
-					onPress={() => console.log('Nova Postagem...')}
+					onPress={() => router.push('/postagem/formpostagem' as any)}
 					className="bg-green-600 rounded-full p-4 shadow-lg flex items-center justify-center"
 				>
-					<Ionicons name="add" size={24} color={'#ffffff'} />
+					<AntDesign name="plus" size={24} color={'#ffffff'} />
 				</Pressable>
 			</View>
 		</View>

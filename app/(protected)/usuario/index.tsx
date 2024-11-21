@@ -1,11 +1,24 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { Image, ScrollView, Text, View } from 'react-native'
 import { useAuthStore } from '../../../stores/AuthStore'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { router, useRouter } from 'expo-router'
+import { ToastAlerta } from '../../../utils/ToastAlerta'
 
 export default function Perfil() {
-	const { usuario, handleLogout } = useAuthStore()
+	
+	const router = useRouter()
+	
+	const { usuario } = useAuthStore()
+	const token = usuario.token
+	
+	useEffect(() => {
+		if (token === '') {
+			ToastAlerta('Você precisa estar logado!', 'info')
+			router.replace('/')
+		}
+	}, [token])
 
 	return (
 		<SafeAreaView className='flex justify-center items-center'>

@@ -12,24 +12,59 @@ import {
 	TextInputChangeEventData,
 	View,
 } from 'react-native'
-import Tema from '../../../models/Tema'
+import Postagem from '../../../models/Postagem'
 import { atualizar, cadastrar, listar } from '../../../services/AxiosService'
 import { useAuthStore } from '../../../stores/AuthStore'
 import { ToastAlerta } from '../../../utils/ToastAlerta'
+import { Dropdown } from 'react-native-element-dropdown';
+import { styles } from '../../../styles/DropDownStyles'
+import Tema from '../../../models/Tema'
 
-export default function FormTema() {
+export default function FormPostagem() {
 	const router = useRouter()
+
 	const { usuario, handleLogout } = useAuthStore()
 	const token = usuario.token
+
+    const [changeTema, setChangeTema] = useState<boolean>(false)
+
+    const [temas, setTemas] = useState<Tema[]>([])
+
+    const [tema, setTema] = useState<Tema>({
+        id: 0,
+        descricao: '',
+    })
+
 	const { id } = useLocalSearchParams()
 
 	const [isLoading, setIsLoading] = useState<boolean>(false)
-	const [tema, setTema] = useState<Tema>({
-		id: 0,
-		descricao: '',
-	})
+	const [postagem, setPostagem] = useState<Postagem>({} as Postagem)
 
-	async function buscarTemaPorId(id: string) {
+	async function buscarPostagemPorId(id: string) {
+		try {
+			await listar(`/postagens/${id}`, setPostagem, {
+				headers: { Authorization: token },
+			})
+		} catch (error: any) {
+			error.toString().includes('401')
+				? handleLogout()
+				: ToastAlerta('Erro ao listar as postagens!', 'erro')
+		}
+	}
+
+    async function buscarTemas() {
+		try {
+			await listar(`/temas`, setTemas, {
+				headers: { Authorization: token },
+			})
+		} catch (error: any) {
+			error.toString().includes('401')
+				? handleLogout()
+				: ToastAlerta('Erro ao listar os temas!', 'erro')
+		}
+	}
+
+    async function buscarTemaPorId(id: string) {
 		try {
 			await listar(`/temas/${id}`, setTema, {
 				headers: { Authorization: token },
@@ -49,20 +84,43 @@ export default function FormTema() {
 	}, [token])
 
 	useEffect(() => {
+        buscarTemas()
+
 		if (id !== undefined) {
-			buscarTemaPorId(id.toString())
+			buscarPostagemPorId(id.toString())
+            setTema(postagem.tema)
 		}
 	}, [id])
+
+    useEffect(() => {
+        setPostagem({
+            ...postagem,
+            tema: tema,
+            usuario: usuario,
+        })
+
+    }, [tema])
 
 	function atualizarEstado(
 		e: NativeSyntheticEvent<TextInputChangeEventData>,
 		name: string
 	) {
-		setTema({
-			...tema,
+		setPostagem({
+			...postagem,
 			[name]: e.nativeEvent.text,
 		})
 	}
+
+    function atualizarTema(tema: Tema) {
+
+        setTema({
+            id: tema.id,
+            descricao: tema.descricao
+        });
+
+        setChangeTema(true)
+
+    }
 
 	async function handleSubmit() {
 		setIsLoading(true)
@@ -70,12 +128,14 @@ export default function FormTema() {
 		try {
 			const endpoint = id !== undefined ? atualizar : cadastrar
 
-			await endpoint(`/temas`, tema, setTema, {
+			await endpoint(`/postagens`, postagem, setPostagem, {
 				headers: { Authorization: token },
 			})
 
 			ToastAlerta(
-				id !== undefined ? 'Tema Atualizado!' : 'Tema Cadastrado!',
+				id !== undefined
+					? 'Postagem Atualizada!'
+					: 'Postagem Cadastrada!',
 				'sucesso'
 			)
 			retornar()
@@ -85,8 +145,8 @@ export default function FormTema() {
 			} else {
 				ToastAlerta(
 					id !== undefined
-						? 'Erro ao atualizar o tema!'
-						: 'Erro ao cadastrar o tema!',
+						? 'Erro ao atualizar a postagem!'
+						: 'Erro ao cadastrar a postagem!',
 					'erro'
 				)
 				console.error(error)
@@ -97,8 +157,11 @@ export default function FormTema() {
 	}
 
 	function retornar() {
-		router.replace('/tema')
+		router.replace('/postagem')
 	}
+
+    console.log(JSON.stringify(tema))
+    console.log(JSON.stringify(postagem))
 
 	if (isLoading) {
 		return (
@@ -123,15 +186,41 @@ export default function FormTema() {
 		>
 			<View className="flex flex-col items-center justify-center w-full my-8">
 				<Text className="text-3xl font-semibold text-eviolet-900 py-4">
-					{id ? 'Editar Tema' : 'Cadastrar Tema'}
+					{id ? 'Editar Postagem' : 'Cadastrar Postagem'}
 				</Text>
 
 				<TextInput
-					className="w-10/12 px-4 py-2 rounded-3xl border border-gray-300
+					className="w-10/12 my-2 px-4 py-2 rounded-3xl border border-gray-300
                     text-xl text-black bg-white"
-					placeholder="Tema"
-					value={tema.descricao}
-					onChange={(e) => atualizarEstado(e, 'descricao')}
+					placeholder="Título da Postagem"
+					value={postagem.titulo}
+					onChange={(e) => atualizarEstado(e, 'titulo')}
+				/>
+
+				<TextInput
+					className="w-10/12 my-2 px-4 py-2 rounded-3xl border border-gray-300
+                    text-xl text-black bg-white"
+					placeholder="Texto da Postagem"
+					value={postagem.texto}
+					onChange={(e) => atualizarEstado(e, 'texto')}
+				/>
+
+				<Dropdown
+					style={styles.selectInput}
+					placeholderStyle={styles.placeholder}
+					selectedTextStyle={styles.selectedText}
+					itemTextStyle={styles.itemText}
+					itemContainerStyle={styles.itemContainer}
+                    containerStyle={styles.container}
+                    iconStyle={styles.icon}
+					data={temas.sort((a, b) => a.id - b.id)}
+					search={false}
+					maxHeight={300}
+					labelField="descricao"
+					valueField="id"
+					placeholder="Selecione um Tema"
+					value={postagem.tema || ''}
+					onChange={(value) => atualizarTema(value)}
 				/>
 
 				<View className="w-8/12 flex flex-row gap-4 my-6">

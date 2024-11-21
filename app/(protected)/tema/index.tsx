@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons'
 import { useFocusEffect, useRouter } from 'expo-router'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import {
 	ActivityIndicator,
 	Pressable,
@@ -10,9 +10,10 @@ import {
 } from 'react-native'
 import CardTemas from '../../../components/cardtema'
 import Tema from '../../../models/Tema'
-import { listar } from '../../../services/Service'
+import { listar } from '../../../services/AxiosService'
 import { useAuthStore } from '../../../stores/AuthStore'
 import { ToastAlerta } from '../../../utils/ToastAlerta'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function ListarTemas() {
 	const router = useRouter()
@@ -35,9 +36,7 @@ export default function ListarTemas() {
 			})
 		} catch (error: any) {
 			if (error.toString().includes('401')) {
-				ToastAlerta('Você precisa estar logado!', 'erro')
 				handleLogout()
-				router.replace('/')
 			} else {
 				ToastAlerta('Erro ao listar os temas!', 'erro')
 			}
@@ -48,6 +47,10 @@ export default function ListarTemas() {
 
 	useFocusEffect(
 		useCallback(() => {
+			if (token === '') {
+				ToastAlerta('Você precisa estar logado!', 'info')
+				router.replace('/')
+			}
 			buscarTemas()
 		}, [token])
 	)
@@ -66,7 +69,7 @@ export default function ListarTemas() {
 					Nenhum tema encontrado.
 				</Text>
 			) : (
-				<ScrollView>
+				<ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
 					<View className="flex justify-center items-center">
 						{temas
 							.sort((a, b) => a.id - b.id)
@@ -76,10 +79,10 @@ export default function ListarTemas() {
 					</View>
 				</ScrollView>
 			)}
-			<View className="absolute bottom-4 right-4">
+			<View className="absolute bottom-24 right-8">
 				<Pressable
-					onPress={() => console.log('Novo Tema...')}
-					className="bg-green-600 rounded-full p-4 flex justify-center mx-1"
+					onPress={() => router.push('/tema/formtema' as any)}
+					className="bg-green-600 rounded-full p-4 shadow-lg flex items-center justify-center"
 				>
 					<Ionicons name="add" size={24} color={'#ffffff'} />
 				</Pressable>

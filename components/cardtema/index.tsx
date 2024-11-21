@@ -1,43 +1,41 @@
 import { AntDesign } from '@expo/vector-icons'
+import { useRouter } from 'expo-router'
 import { Pressable, Text, View } from 'react-native'
 import Tema from '../../models/Tema'
 
 interface CardTemaProps {
-	tema: Tema
+    tema: Tema
 }
 
 export default function CardTemas({ tema }: CardTemaProps) {
-	return (
-		<View
-			className="w-[90%] my-4 mx-4 flex items-center justify-center flex-col
-        bg-eviolet-100 rounded-2xl border"
-		>
-			<View className="w-full py-2 px-6 bg-indigo-700 rounded-s-2xl">
-				<Text className="text-white font-bold text-2xl text-center">
-					Categoria
-				</Text>
-			</View>
-			<View className="w-full flex flex-col justify-center items-center p-2">
-				<Text className="p-2 text-2xl font-semibold text-black justify-start">
-					{tema.descricao}
-				</Text>
+    const router = useRouter()
 
-				<View className="flex flex-row">
-					<Pressable
-						onPress={() => console.log('Editar Tema...')}
-						className="bg-indigo-700 rounded-full p-3 flex justify-center mx-1"
-					>
-						<AntDesign name="edit" size={20} color={'#ffffff'} />
-					</Pressable>
+    return (
+        <View className="w-[90%] my-4 mx-4 rounded-2xl overflow-hidden bg-white">
+            <View className="flex-row items-center justify-between py-4 px-6 bg-indigo-800">
 
-					<Pressable
-						onPress={() => console.log('Deletar Tema...')}
-						className="bg-red-600 rounded-full p-3 flex justify-center mx-1"
-					>
-						<AntDesign name="delete" size={20} color={'#ffffff'} />
-					</Pressable>
-				</View>
-			</View>
-		</View>
-	)
+                <Text className="text-white font-bold text-2xl flex-1 text-center">Tema</Text>
+                
+                <View className="flex-row gap-4">
+                    <Pressable 
+                        onPress={() => router.push(`/tema/formtema/?id=${tema.id}` as any)}
+                    >
+                        <AntDesign name="edit" size={24} color="#22d3ee" />
+                    </Pressable>
+                    
+                    <Pressable 
+                        onPress={() => router.push(`/tema/deletartema/?id=${tema.id}` as any)}
+                    >
+                        <AntDesign name="delete" size={24} color="#f87171" />
+                    </Pressable>
+                </View>
+            </View>
+            
+            <View className="p-4">
+                <Text className="text-xl font-semibold text-black text-justify">
+                    {tema.descricao}
+                </Text>
+            </View>
+        </View>
+    )
 }

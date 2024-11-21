@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import UsuarioLogin from '../models/UsuarioLogin';
-import { login } from '../services/Service';
+import { login } from '../services/AxiosService';
 import { ToastAlerta } from '../utils/ToastAlerta';
 
 interface AuthStoreProps {

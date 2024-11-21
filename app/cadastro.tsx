@@ -11,26 +11,27 @@ import {
 	TextInput,
 	View,
 } from 'react-native'
+import Navbar from '../components/navbar'
 import Usuario from '../models/Usuario'
 import { createUsuarioFormData } from '../services/FormDataService'
 import ImageService from '../services/ImageService'
-import { cadastrarUsuario } from '../services/Service'
+import { cadastrarUsuario } from '../services/AxiosService'
 import { ToastAlerta } from '../utils/ToastAlerta'
 import {
 	isValidImageUrl,
 	UsuarioFormData,
 	usuarioSchema,
 } from '../validations/UsuarioSchema'
-import Navbar from '../components/navbar'
 
 export default function Cadastro() {
 	const router = useRouter()
 
 	const [isLoading, setIsLoading] = useState<boolean>(false)
+
 	const [photoUri, setPhotoUri] = useState<string>('')
 	const [fotoPreview, setFotoPreview] = useState<string>('')
-	const [file, setfile] = useState<any>(null) // Estado para armazenar o arquivo
-	const [showUrlInput, setShowUrlInput] = useState<boolean>(false) // Controle do input de URL
+	const [file, setfile] = useState<any>(null)
+	const [showUrlInput, setShowUrlInput] = useState<boolean>(false)
 
 	const [usuario, setUsuario] = useState<Usuario>({
 		id: 0,
@@ -41,7 +42,6 @@ export default function Cadastro() {
 	})
 
 	const {
-		register,
 		handleSubmit,
 		setValue,
 		formState: { errors },
@@ -75,55 +75,36 @@ export default function Cadastro() {
 			setFotoPreview('')
 		}
 
-		// Alterna o estado do input
 		setShowUrlInput((prev) => !prev)
 	}
 
-	async function pickImageFromGallery() {
+	async function handleFoto(method: 'camera' | 'gallery') {
 		limparUriInput()
 
-		const result = await ImageService.pickImageFromGallery()
-		if (result) {
-			setPhotoUri(result.uri)
-			setFotoPreview(result.uri)
-			setfile(result.file)
+		const fotoFile =
+			method === 'camera'
+				? await ImageService.takePhotoWithCamera()
+				: await ImageService.pickImageFromGallery()
+
+		if (fotoFile) {
+			setPhotoUri(fotoFile.uri)
+			setFotoPreview(fotoFile.uri)
+			setfile(fotoFile.file)
 		}
 	}
 
-	async function takePhotoWithCamera() {
-		limparUriInput()
-
-		const result = await ImageService.takePhotoWithCamera()
-		if (result) {
-			setPhotoUri(result.uri)
-			setFotoPreview(result.uri)
-			setfile(result.file)
-		}
-	}
-
-	// Atualiza estado e input manualmente
 	const handleInputChange = (name: keyof UsuarioFormData, value: string) => {
-
 		setValue(name, value)
 
 		if (name === 'foto') {
 			setPhotoUri(value)
 
-			if (isValidImageUrl(value)) setFotoPreview(value)
-			else setFotoPreview('')
+			isValidImageUrl(value) ? setFotoPreview(value) : setFotoPreview('')
 		}
 	}
 
 	async function cadastrar(data: any) {
 		setIsLoading(true)
-
-		setUsuario({
-			id: 0,
-			nome: data.nome,
-			usuario: data.usuario,
-			senha: data.senha,
-			foto: data.foto,
-		})
 
 		const formData = createUsuarioFormData(
 			{ ...data, foto: photoUri },
@@ -192,7 +173,7 @@ export default function Cadastro() {
 								</Text>
 							</Pressable>
 							<Pressable
-								onPress={takePhotoWithCamera}
+								onPress={() => handleFoto('camera')}
 								className="w-1/4 py-2 bg-indigo-200 border-2 border-indigo-900 rounded-2xl items-center justify-center"
 							>
 								<Text className="text-white text-lg">
@@ -205,7 +186,7 @@ export default function Cadastro() {
 								</Text>
 							</Pressable>
 							<Pressable
-								onPress={pickImageFromGallery}
+								onPress={() => handleFoto('gallery')}
 								className="w-1/4 py-2 bg-indigo-200 border-2 border-indigo-900 rounded-2xl items-center justify-center"
 							>
 								<Text className="text-white text-lg">

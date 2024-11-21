@@ -1,12 +1,11 @@
 import { Slot } from 'expo-router';
-import { StatusBar } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView, StatusBar } from 'react-native';
 
 export default function UsuarioLayoutStack() {
     return (
-        <SafeAreaProvider style={{ flex: 1 }}>
-            <StatusBar />
+        <SafeAreaView style={{ flex: 1 }}>
+			<StatusBar barStyle="light-content" />
             <Slot />
-        </SafeAreaProvider>
+        </SafeAreaView>
     );
 }

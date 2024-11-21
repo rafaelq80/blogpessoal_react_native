@@ -1,4 +1,3 @@
-import { Stack } from 'expo-router'
 import React from 'react'
 import {
 	KeyboardAvoidingView,
@@ -7,7 +6,7 @@ import {
 	StatusBar,
 } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import 'react-native-reanimated'
+import { Stack } from 'expo-router'
 import { Toaster } from 'sonner-native'
 import './../global.css'
 
@@ -19,23 +18,16 @@ export default function RootLayoutNav() {
 					style={{ flex: 1 }}
 					behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 				>
-					<StatusBar />
-					<Stack>
-						<Stack.Screen
-							name="index"
-							options={{ title: 'Login', headerShown: false }}
-						/>
-						<Stack.Screen
-							name="cadastro"
-							options={{
-								title: 'Cadastrar Usuário',
-								headerShown: false,
-							}}
-						/>
-						<Stack.Screen
-							name="(protected)"
-							options={{ headerShown: false }}
-						/>
+					<StatusBar barStyle="light-content" />
+					<Stack
+						screenOptions={{
+							headerShown: false,
+							animation: 'fade',
+						}}
+					>
+						<Stack.Screen name="index" options={{ title: 'Login' }} />
+						<Stack.Screen name="cadastro" options={{ title: 'Cadastrar Usuário' }} />
+						<Stack.Screen name="(protected)" />
 					</Stack>
 					<Toaster
 						richColors

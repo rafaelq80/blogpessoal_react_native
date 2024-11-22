@@ -1,5 +1,5 @@
-import { useLocalSearchParams, useRouter } from 'expo-router'
-import React, { useEffect, useState } from 'react'
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
 	ActivityIndicator,
 	KeyboardAvoidingView,
@@ -16,7 +16,7 @@ import Postagem from '../../../models/Postagem'
 import { atualizar, cadastrar, listar } from '../../../services/AxiosService'
 import { useAuthStore } from '../../../stores/AuthStore'
 import { ToastAlerta } from '../../../utils/ToastAlerta'
-import { Dropdown } from 'react-native-element-dropdown';
+import { Dropdown } from 'react-native-element-dropdown'
 import { styles } from '../../../styles/DropDownStyles'
 import Tema from '../../../models/Tema'
 
@@ -26,14 +26,14 @@ export default function FormPostagem() {
 	const { usuario, handleLogout } = useAuthStore()
 	const token = usuario.token
 
-    const [changeTema, setChangeTema] = useState<boolean>(false)
+	const [changeTema, setChangeTema] = useState<boolean>(false)
 
-    const [temas, setTemas] = useState<Tema[]>([])
+	const [temas, setTemas] = useState<Tema[]>([])
 
-    const [tema, setTema] = useState<Tema>({
-        id: 0,
-        descricao: '',
-    })
+	const [tema, setTema] = useState<Tema>({
+		id: 0,
+		descricao: '',
+	})
 
 	const { id } = useLocalSearchParams()
 
@@ -52,7 +52,7 @@ export default function FormPostagem() {
 		}
 	}
 
-    async function buscarTemas() {
+	async function buscarTemas() {
 		try {
 			await listar(`/temas`, setTemas, {
 				headers: { Authorization: token },
@@ -64,7 +64,7 @@ export default function FormPostagem() {
 		}
 	}
 
-    async function buscarTemaPorId(id: string) {
+	async function buscarTemaPorId(id: string) {
 		try {
 			await listar(`/temas/${id}`, setTema, {
 				headers: { Authorization: token },
@@ -83,23 +83,24 @@ export default function FormPostagem() {
 		}
 	}, [token])
 
+	useFocusEffect(
+		useCallback(() => {
+			buscarTemas()
+
+			if (id !== undefined) {
+				buscarPostagemPorId(id.toString())
+				setTema(postagem.tema)
+			}
+		}, [id])
+	)
+
 	useEffect(() => {
-        buscarTemas()
-
-		if (id !== undefined) {
-			buscarPostagemPorId(id.toString())
-            setTema(postagem.tema)
-		}
-	}, [id])
-
-    useEffect(() => {
-        setPostagem({
-            ...postagem,
-            tema: tema,
-            usuario: usuario,
-        })
-
-    }, [tema])
+		setPostagem({
+			...postagem,
+			tema: tema,
+			usuario: usuario,
+		})
+	}, [tema])
 
 	function atualizarEstado(
 		e: NativeSyntheticEvent<TextInputChangeEventData>,
@@ -111,16 +112,14 @@ export default function FormPostagem() {
 		})
 	}
 
-    function atualizarTema(tema: Tema) {
+	function atualizarTema(tema: Tema) {
+		setTema({
+			id: tema.id,
+			descricao: tema.descricao,
+		})
 
-        setTema({
-            id: tema.id,
-            descricao: tema.descricao
-        });
-
-        setChangeTema(true)
-
-    }
+		setChangeTema(true)
+	}
 
 	async function handleSubmit() {
 		setIsLoading(true)
@@ -159,9 +158,6 @@ export default function FormPostagem() {
 	function retornar() {
 		router.replace('/postagem')
 	}
-
-    console.log(JSON.stringify(tema))
-    console.log(JSON.stringify(postagem))
 
 	if (isLoading) {
 		return (
@@ -211,8 +207,8 @@ export default function FormPostagem() {
 					selectedTextStyle={styles.selectedText}
 					itemTextStyle={styles.itemText}
 					itemContainerStyle={styles.itemContainer}
-                    containerStyle={styles.container}
-                    iconStyle={styles.icon}
+					containerStyle={styles.container}
+					iconStyle={styles.icon}
 					data={temas.sort((a, b) => a.id - b.id)}
 					search={false}
 					maxHeight={300}

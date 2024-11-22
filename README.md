@@ -117,7 +117,7 @@ Abra o app no Emulador de sua preferência ou no seu celular (Android ou IOS), a
 
 ```plaintext
 src/
-├── /app           	  	  # Telas e a Navegação do app
+├── /app                  # Telas e a Navegação do app
 ├── /assets               # Splash e Ícone do app
 ├── /components           # Componentes reutilizáveis
 ├── /models               # Modelos de dados do aplicativo

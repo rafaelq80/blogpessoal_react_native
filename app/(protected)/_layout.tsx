@@ -40,6 +40,7 @@ export default function ProtectedLayout() {
 									color={focused ? '#ffffff' : '#a5b4fc'}
 								/>
 							),
+							href: '/postagem'
 						}}
 					/>
 					<Tabs.Screen
@@ -53,6 +54,7 @@ export default function ProtectedLayout() {
 									color={focused ? '#ffffff' : '#a5b4fc'}
 								/>
 							),
+							href: '/tema'
 						}}
 					/>
 					<Tabs.Screen
@@ -66,6 +68,7 @@ export default function ProtectedLayout() {
 									color={focused ? '#ffffff' : '#a5b4fc'}
 								/>
 							),
+							href: '/usuario'
 						}}
 					/>
 				</Tabs>

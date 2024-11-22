@@ -1,4 +1,8 @@
 ﻿import { StyleSheet } from 'react-native'
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+
+// Função para calcular medida relativa (rem)
+const rem = (value: number) => wp(`${value * 4}%`);
 
 export const styles = StyleSheet.create({
 	selectInput: {
@@ -6,48 +10,48 @@ export const styles = StyleSheet.create({
 		backgroundColor: '#ffffff',
 		color: '#000000',
 		borderColor: '#d1d5db',
-		borderRadius: 24,
+		borderRadius: rem(1.5),
 		borderWidth: 1,
-		fontSize: 20,
-		lineHeight: 28,
-		marginTop: 8,
-		marginBottom: 8,
-		paddingTop: 8,
-		paddingBottom: 8,
+		fontSize: rem(1.25),
+		lineHeight: rem(1.75),
+		marginTop: rem(0.5),
+		marginBottom: rem(0.5),
+		paddingVertical: rem(0.5),
+		paddingHorizontal: rem(0.5),
 	},
 	placeholder: {
-		color: '#9ca3af',
-		fontSize: 18,
-		lineHeight: 24,
-		paddingStart: 16,
+		color: '#a2a2a2',
+		fontSize: rem(1.25),
+		lineHeight: rem(1.75),
+		paddingStart: rem(0.5),
 	},
 	selectedText: {
 		color: '#000000',
-		fontSize: 20,
-		lineHeight: 24,
-		paddingStart: 16,
+		fontSize: rem(1.25),
+		lineHeight: rem(1.75),
+		paddingStart: rem(0.5),
 	},
 	itemText: {
 		color: '#000000',
-		fontSize: 20,
-		lineHeight: 24,
+		fontSize: rem(1.25),
+		lineHeight: rem(1.75),
 	},
 	itemContainer: {
 		color: '#000000',
 		backgroundColor: '#ffffff',
-		fontSize: 18,
-		lineHeight: 24,
+		fontSize: rem(1.25),
+		lineHeight: rem(1.75),
 	},
 	container: {
 		width: '75%',
 		marginLeft: 20,
 		color: '#000000',
 		backgroundColor: '#ffffff',
-		fontSize: 18,
-		lineHeight: 24,
+		fontSize: rem(1.25),
+		lineHeight: rem(1.75),
 	},
 	icon: {
 		marginRight: 10,
-		width: 25,
+		width: rem(1.5),
 	},
 })

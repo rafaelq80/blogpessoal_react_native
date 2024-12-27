@@ -2,23 +2,21 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router'
 import React, { useCallback, useEffect, useState } from 'react'
 import {
 	ActivityIndicator,
-	KeyboardAvoidingView,
 	NativeSyntheticEvent,
-	Platform,
 	Pressable,
 	ScrollView,
 	Text,
 	TextInput,
 	TextInputChangeEventData,
-	View,
+	View
 } from 'react-native'
+import { Dropdown } from 'react-native-element-dropdown'
 import Postagem from '../../../models/Postagem'
+import Tema from '../../../models/Tema'
 import { atualizar, cadastrar, listar } from '../../../services/AxiosService'
 import { useAuthStore } from '../../../stores/AuthStore'
-import { ToastAlerta } from '../../../utils/ToastAlerta'
-import { Dropdown } from 'react-native-element-dropdown'
 import { styles } from '../../../styles/DropDownStyles'
-import Tema from '../../../models/Tema'
+import { ToastAlerta } from '../../../utils/ToastAlerta'
 
 export default function FormPostagem() {
 	const router = useRouter()
